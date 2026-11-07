@@ -1,0 +1,113 @@
+Git 是分布式版本控制系统，日常开发中常用命令可以按工作流来记：配置 → 仓库 → 暂存/提交 → 分支 → 远程同步 → 查看历史 → 撤销/恢复 → 标签/暂存。下面按场景整理，方便直接对照使用。
+
+基础配置
+命令   作用
+git config --global user.name "名字"   设置提交用户名
+git config --global user.email "邮箱"   设置提交邮箱
+git config --global --list   查看当前配置
+git config --global core.editor "code --wait"   设置默认编辑器，比如 VS Code
+
+首次使用 Git 时，用户名和邮箱必须配置，否则提交记录无法正确关联作者。
+
+创建和克隆仓库
+命令   作用
+git init   在当前目录初始化本地仓库
+git clone <url>   克隆远程仓库到本地
+git clone -b <分支> <url>   克隆指定分支
+git remote -v   查看已关联的远程仓库
+git remote add origin <url>   给本地仓库添加远程地址
+
+如果是在 GitHub 等平台托管代码，通常先 git clone 下来即可；本地新建项目则用 git init。
+
+暂存与提交
+命令   作用
+git status   查看工作区和暂存区状态
+git add <文件>   添加指定文件到暂存区
+git add .   添加所有改动到暂存区
+git diff   查看工作区未暂存的改动
+git diff --cached   查看已暂存但未提交的改动
+git commit -m "说明"   提交暂存区内容到本地仓库
+git commit -a -m "说明"   直接提交已跟踪文件的修改
+git commit --amend   修改最近一次提交
+
+常用流程是：git add . → git commit -m "说明"。
+
+分支管理
+命令   作用
+git branch   查看本地分支
+git branch <分支名>   创建分支
+git switch <分支名>   切换分支
+git switch -c <分支名>   创建并切换到新分支
+git branch -d <分支名>   删除已合并的分支
+git branch -D <分支名>   强制删除分支
+git merge <分支名>   把指定分支合并到当前分支
+git rebase <分支名>   变基，整理提交历史
+
+老版本中常用 git checkout <分支> 切换分支，现在更推荐用 git switch。
+
+远程同步
+命令   作用
+git fetch <远程>   拉取远程更新，但不合并
+git pull <远程> <分支>   拉取并合并远程代码
+git push <远程> <分支>   推送本地提交到远程
+git push -u origin main   首次推送并建立追踪关系
+git push --tags   推送所有标签
+git push origin :<分支>   删除远程分支
+
+git pull 相当于 git fetch + git merge。
+
+查看历史
+命令   作用
+git log   查看提交历史
+git log --oneline   简洁查看提交历史
+git log -p <文件>   查看某个文件的提交差异
+git blame <文件>   查看文件每一行是谁修改的
+git show <commit>   查看某次提交的详细内容
+git reflog   查看 HEAD 变化记录，适合找回丢失提交
+
+git reflog 很实用，误操作后常能通过它找回之前的提交。
+
+撤销与恢复
+命令   作用
+git restore <文件>   放弃工作区修改
+git restore --staged <文件>   取消暂存
+git reset --soft HEAD~1   撤销最近一次提交，保留代码和暂存
+git reset --mixed HEAD~1   撤销提交和暂存，但保留工作区代码
+git reset --hard HEAD~1   完全回退，慎用
+git revert <commit>   生成一个新提交来撤销某次提交，更安全
+git stash   临时保存当前未提交改动
+git stash pop   恢复最近一次暂存
+
+如果已经推送到远程，优先用 git revert；本地误提交可以用 git reset。
+
+标签管理
+命令   作用
+git tag   查看标签
+git tag v1.0   给当前提交创建标签
+git tag v1.0 <commit>   给指定提交创建标签
+git push origin v1.0   推送指定标签
+git push origin --tags   推送所有标签
+git tag -d <标签>   删除本地标签
+
+标签常用于发布版本，比如 v1.0.0。
+
+一个常用开发流程示例
+
+git pull origin main
+git switch -c feature/login
+# 写代码
+git add .
+git commit -m "feat: 添加登录页面"
+git push -u origin feature/login
+
+如果遇到冲突，通常步骤是：手动修改冲突文件 → git add . → git commit。
+
+学习建议
+
+可以先重点掌握这几条：git status、git add、git commit、git log、git branch、git switch、git pull、git push。遇到不熟悉的命令，可以用：
+
+git <命令> --help
+
+比如 git commit --help，能直接看到官方说明。
+
+掌握了Git基础命令后，需要我为你整理一份GitHub的常见操作流程（如Pull Request、Fork等）吗？
